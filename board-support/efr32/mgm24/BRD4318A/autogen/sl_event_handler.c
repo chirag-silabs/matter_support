@@ -18,6 +18,7 @@
 #include "platform-efr32.h"
 #include "sl_sleeptimer.h"
 #include "sl_mpu.h"
+#include "sl_debug_swo.h"
 #include "sl_gpio.h"
 #if defined(SL_MATTER_USE_SI70XX_SENSOR) && SL_MATTER_USE_SI70XX_SENSOR
 #include "sl_i2cspm_instances.h"
@@ -34,8 +35,9 @@
 #include "cmsis_os2.h"
 #include "sl_iostream_init_instances.h"
 #include "sl_bluetooth.h"
-#include "sl_iostream_handles.h"
 #include "nvm3_default.h"
+#include "sl_cos.h"
+#include "sl_iostream_handles.h"
 #include "sl_power_manager.h"
 
 void sl_platform_init(void)
@@ -62,6 +64,7 @@ void sl_kernel_start(void)
 
 void sl_driver_init(void)
 {
+  sl_debug_swo_init();
   sl_gpio_init();
   #if defined(SL_MATTER_USE_SI70XX_SENSOR) && SL_MATTER_USE_SI70XX_SENSOR
   sl_i2cspm_init_instances();
@@ -71,6 +74,7 @@ void sl_driver_init(void)
 #if defined(CONFIG_ENABLE_UART)
   sl_uartdrv_init_instances();
 #endif
+  sl_cos_send_config();
 }
 
 void sl_service_init(void)
@@ -107,4 +111,6 @@ void sl_internal_app_init(void)
 void sl_iostream_init_instances(void)
 {
   sl_iostream_rtt_init();
+  sl_iostream_set_console_instance();
 }
+

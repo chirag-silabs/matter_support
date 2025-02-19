@@ -18,6 +18,7 @@
 #include "platform-efr32.h"
 #include "sl_sleeptimer.h"
 #include "sl_mpu.h"
+#include "sl_debug_swo.h"
 #include "sl_gpio.h"
 #include "sl_iostream_rtt.h"
 #include "sl_mbedtls.h"
@@ -30,8 +31,9 @@
 #include "cmsis_os2.h"
 #include "sl_iostream_init_instances.h"
 #include "sl_bluetooth.h"
-#include "sl_iostream_handles.h"
 #include "nvm3_default.h"
+#include "sl_cos.h"
+#include "sl_iostream_handles.h"
 #include "sl_power_manager.h"
 
 void sl_platform_init(void)
@@ -58,9 +60,11 @@ void sl_kernel_start(void)
 
 void sl_driver_init(void)
 {
+  sl_debug_swo_init();
   sl_gpio_init();
   sl_simple_led_init_instances();
   sl_uartdrv_init_instances();
+  sl_cos_send_config();
 }
 
 void sl_service_init(void)
@@ -97,4 +101,6 @@ void sl_internal_app_init(void)
 void sl_iostream_init_instances(void)
 {
   sl_iostream_rtt_init();
+  sl_iostream_set_console_instance();
 }
+
